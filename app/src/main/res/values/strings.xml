@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Screen</string>
+
+    <string name="rationale_init">APP Needs some Permission</string>
+    <string name="permissions_denied_content_str">Permission Denied \nOpen Setting to Modify APP Permission</string>
+    <string name="need_permissions_str">Permission Required</string>
+</resources>
