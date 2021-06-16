@@ -2,9 +2,23 @@ plugins {
     id 'com.android.application'
 }
 
-android {
-    compileSdkVersion 30
+static def releaseTime() {
+    return new Date().format("yyyy.MM.dd", TimeZone.getTimeZone("UTC"))
+}
 
+android {
+    signingConfigs {
+        release {
+            storeFile file('../keystore/release.jks')
+            keyAlias 'codeexp2021app2'
+            keyPassword 'codeexp2021app2'
+            storePassword 'codeexp2021app2'
+        }
+        debug {
+            storeFile file('../keystore/debug.keystore')
+        }
+    }
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.example.codeexp2021app2"
         minSdkVersion 23
@@ -14,16 +28,41 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "${variant.flavorName}-v${versionName}-${variant.buildType.name}-build${versionCode}-${releaseTime()}.apk"
+                }
+            }
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "${variant.flavorName}-v${versionName}-${variant.buildType.name}-build${versionCode}-${releaseTime()}.apk"
+                }
+            }
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    flavorDimensions "app"
+    productFlavors {
+        codeexp2021app2 {
+            versionCode 1
+            versionName "1.0.0"
+            dimension "app"
+            applicationId = "com.example.codeexp2021app2"
+            manifestPlaceholders = [deviceType: "DEVICE_TYPE"]
+        }
     }
 }
 
